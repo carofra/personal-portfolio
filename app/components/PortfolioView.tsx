@@ -170,11 +170,9 @@ function ProjectSlideCard({ project, index }: SectionProps) {
     target: ref,
     offset: ["start 85%", "center 45%"],
   });
-  const clipPath = useTransform(
-    scrollYProgress,
-    [0, 1],
-    ["inset(100% 0 0 0)", "inset(0% 0 0 0)"]
-  );
+  // Keep the fill effect but avoid continuous repaint cost:
+  // opacity stays 0 for most of the travel, then fades in near center.
+  const fillOpacity = useTransform(scrollYProgress, [0, 0.62, 1], [0, 0, 1]);
 
   const number = String(index + 1).padStart(2, "0");
   const styleByIndex = [
@@ -206,11 +204,10 @@ function ProjectSlideCard({ project, index }: SectionProps) {
     <li
       id={`project-step-${index}`}
       ref={ref}
-      className="group md:sticky md:top-28"
+      className="group lg:sticky lg:top-28"
       style={{ zIndex: 10 + index }}
     >
       <motion.a
-        layout
         href={project.href}
         target="_blank"
         rel="noopener noreferrer"
@@ -220,7 +217,7 @@ function ProjectSlideCard({ project, index }: SectionProps) {
         viewport={{ once: true, amount: 0.45 }}
         transition={{ duration: 0.7, delay: index * 0.05, ease: EASE_OUT_TUPLE }}
         whileHover={{ scale: 1.008, y: -6 }}
-        className={`block min-h-[90vh] rounded-sm border border-white/20 px-4 py-8 no-underline shadow-[0_18px_36px_rgba(15,15,15,0.16)] sm:min-h-[100vh] sm:px-6 sm:py-10 md:min-h-[120vh] md:px-8 md:py-11 lg:min-h-[140vh] lg:px-9 lg:py-12 lg:shadow-[0_30px_80px_rgba(15,15,15,0.2)] ${ui.bg}`}
+        className={`block transform-gpu min-h-[90vh] rounded-sm border border-white/20 px-4 py-8 no-underline shadow-[0_8px_20px_rgba(15,15,15,0.12)] sm:min-h-[100vh] sm:px-6 sm:py-10 md:min-h-[120vh] md:px-8 md:py-11 lg:min-h-[140vh] lg:px-9 lg:py-12 lg:shadow-[0_18px_44px_rgba(15,15,15,0.16)] ${ui.bg}`}
       >
         <div className="mb-8 flex items-start justify-between gap-4">
           <motion.span
@@ -244,7 +241,7 @@ function ProjectSlideCard({ project, index }: SectionProps) {
           </span>
           {/* Riempimento che compare in fade, senza tagliare le lettere */}
           <motion.span
-            style={{ opacity: scrollYProgress }}
+            style={{ opacity: fillOpacity }}
             className="pointer-events-none absolute inset-0 block font-display text-[clamp(2rem,12vw,3.4rem)] leading-[0.92] tracking-tight text-white md:text-5xl lg:text-6xl"
             aria-hidden
           >
