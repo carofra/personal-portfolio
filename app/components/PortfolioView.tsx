@@ -168,11 +168,11 @@ function ProjectSlideCard({ project, index }: SectionProps) {
   const ref = useRef<HTMLLIElement | null>(null);
   const { scrollYProgress } = useScroll({
     target: ref,
-    offset: ["start 85%", "center 45%"],
+    offset: ["start 92%", "center 62%"],
   });
   // Keep the fill effect but avoid continuous repaint cost:
-  // opacity stays 0 for most of the travel, then fades in near center.
-  const fillOpacity = useTransform(scrollYProgress, [0, 0.62, 1], [0, 0, 1]);
+  // Fill much earlier so first/second cards complete before overlap intensifies.
+  const fillOpacity = useTransform(scrollYProgress, [0, 0.2, 0.5], [0.28, 0.75, 1]);
 
   const number = String(index + 1).padStart(2, "0");
   const styleByIndex = [
@@ -236,7 +236,7 @@ function ProjectSlideCard({ project, index }: SectionProps) {
 
         <div className="relative z-10 mb-7 block max-w-[20ch] sm:mb-8 lg:mb-10">
           {/* Outline sempre visibile */}
-          <span className="block font-display text-[clamp(2rem,12vw,3.4rem)] leading-[0.92] tracking-tight text-transparent [webkit-text-stroke:1px_white] md:text-5xl lg:text-6xl">
+          <span className="block font-display text-[clamp(2rem,12vw,3.4rem)] leading-[0.92] tracking-tight text-white/45 [-webkit-text-stroke:1.2px_white] md:text-5xl lg:text-6xl">
             {project.title}
           </span>
           {/* Riempimento che compare in fade, senza tagliare le lettere */}
