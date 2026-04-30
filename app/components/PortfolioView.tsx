@@ -469,7 +469,7 @@ function PortfolioInner({
         <motion.p
           animate={{ opacity: [0.35, 1, 0.35] }}
           transition={{ duration: 2.2, repeat: Infinity, ease: "easeInOut" }}
-          className="absolute bottom-16 left-4 font-mono text-[10px] tracking-[0.18em] text-zinc-600 uppercase"
+          className="absolute left-4 z-20 font-mono text-[10px] tracking-[0.18em] text-zinc-600 uppercase bottom-[calc(env(safe-area-inset-bottom)+4.5rem)]"
         >
           Scroll to explore ↓
         </motion.p>
