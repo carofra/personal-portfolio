@@ -204,7 +204,7 @@ function ProjectSlideCard({ project, index }: SectionProps) {
     <li
       id={`project-step-${index}`}
       ref={ref}
-      className="group lg:sticky lg:top-28"
+      className="group xl:sticky xl:top-28"
       style={{ zIndex: 10 + index }}
     >
       <motion.a
@@ -217,7 +217,7 @@ function ProjectSlideCard({ project, index }: SectionProps) {
         viewport={{ once: true, amount: 0.45 }}
         transition={{ duration: 0.7, delay: index * 0.05, ease: EASE_OUT_TUPLE }}
         whileHover={{ scale: 1.008, y: -6 }}
-        className={`block transform-gpu min-h-[90vh] rounded-sm border border-white/20 px-4 py-8 no-underline shadow-[0_8px_20px_rgba(15,15,15,0.12)] sm:min-h-[100vh] sm:px-6 sm:py-10 md:min-h-[120vh] md:px-8 md:py-11 lg:min-h-[140vh] lg:px-9 lg:py-12 lg:shadow-[0_18px_44px_rgba(15,15,15,0.16)] ${ui.bg}`}
+        className={`block transform-gpu min-h-[84vh] rounded-sm border border-white/20 px-4 py-8 no-underline shadow-[0_6px_16px_rgba(15,15,15,0.1)] sm:min-h-[96vh] sm:px-6 sm:py-10 md:min-h-[110vh] md:px-8 md:py-11 lg:min-h-[126vh] lg:px-9 lg:py-12 lg:shadow-[0_16px_38px_rgba(15,15,15,0.14)] xl:min-h-[140vh] xl:shadow-[0_18px_44px_rgba(15,15,15,0.16)] ${ui.bg}`}
       >
         <div className="mb-8 flex items-start justify-between gap-4">
           <motion.span
@@ -365,15 +365,37 @@ function PortfolioInner({
 
   return (
     <main className="relative w-full overflow-x-clip bg-[#FAFAFA] text-[#111]">
-      {/* Hero area: content is fixed and transforms on first scroll segment */}
-      <section className="relative h-[110vh] w-full px-4 sm:h-[115vh] sm:px-8 lg:h-[120vh] lg:px-20">
+      {/* Mobile hero: static, readable, no clipping */}
+      <section className="relative flex min-h-screen w-full items-center justify-center px-4 sm:hidden">
+        <div className="text-center">
+          <h1 className="font-display text-[clamp(2.1rem,15vw,3.2rem)] leading-[0.88] tracking-tight text-[#111] uppercase">
+            CA
+            <br />
+            RO
+            <br />
+            LI
+            <br />
+            NA
+          </h1>
+        </div>
+        <motion.p
+          animate={{ opacity: [0.35, 1, 0.35] }}
+          transition={{ duration: 2.2, repeat: Infinity, ease: "easeInOut" }}
+          className="absolute bottom-6 left-4 font-mono text-[10px] tracking-[0.18em] text-zinc-600 uppercase"
+        >
+          Scroll to explore ↓
+        </motion.p>
+      </section>
+
+      {/* Desktop/tablet hero: fixed transform on first scroll segment */}
+      <section className="relative hidden h-[110vh] w-full px-4 sm:block sm:h-[115vh] sm:px-8 lg:h-[120vh] lg:px-20">
         <span className="sr-only">{config.bio}</span>
       </section>
 
       <motion.div
         aria-hidden
         style={{ x: heroX, y: heroY, scale: heroScale, opacity: heroOpacity }}
-        className="pointer-events-none fixed top-1/2 left-1/2 z-50 -translate-x-1/2 -translate-y-1/2 px-4 sm:px-0"
+        className="pointer-events-none fixed top-1/2 left-1/2 z-50 hidden -translate-x-1/2 -translate-y-1/2 px-4 sm:block sm:px-0"
       >
         <AnimatedTitle
           as="h1"
@@ -384,7 +406,7 @@ function PortfolioInner({
 
       <motion.div
         style={{ opacity: hintOpacity }}
-        className="fixed bottom-6 left-4 z-40 sm:bottom-10 sm:left-8 lg:bottom-12 lg:left-20"
+        className="fixed bottom-6 left-4 z-40 hidden sm:block sm:bottom-10 sm:left-8 lg:bottom-12 lg:left-20"
       >
         <motion.p
           animate={{ opacity: [0.35, 1, 0.35] }}
