@@ -18,6 +18,15 @@ export type ProjectEntry = {
   title: string;
   href: string;
   description: string;
+  /** Theme color for step card background */
+  themeColor?: string;
+  /** Optional accent color for future decorative details */
+  accentColor?: string;
+  /** Optional card labels/copy overrides */
+  topCode?: string;
+  leftMeta?: string;
+  rightMeta?: string;
+  ctaLabel?: string;
   /** Lista servizi/discipline mostrata in stile tux.co/work */
   services: readonly string[];
   /** 2–3 screenshot asimmetrici (mshots) per composizione scroll */
@@ -32,7 +41,13 @@ export const projects: ProjectEntry[] = [
     title: "The Butter Project",
     href: "https://www.thebutterproject.club/",
     description:
-      "Identità e community digitale per un collettivo creativo — design system, cms headless e tipografia editoriale.",
+      "Piattaforma digitale per un collettivo creativo con design system modulare.",
+    themeColor: "#ff5a00",
+    accentColor: "#ffd8bf",
+    topCode: "(PROJECT 01)",
+    leftMeta: "Primary focus",
+    rightMeta: "Secondary focus",
+    ctaLabel: "Visit project",
     services: [
       "Art Direction",
       "Web Design",
@@ -49,7 +64,13 @@ export const projects: ProjectEntry[] = [
     title: "Giulia Pontico Makeup",
     href: "https://giuliaponticomakeup.it/",
     description:
-      "Vetrina digitale e sistema di booking per una make-up artist — flussi di prenotazione, gallery dinamica.",
+      "Vetrina digitale e sistema di booking per una make-up artist.",
+    themeColor: "#76b9db",
+    accentColor: "#d7f0ff",
+    topCode: "(PROJECT 02)",
+    leftMeta: "Primary focus",
+    rightMeta: "Secondary focus",
+    ctaLabel: "Visit project",
     services: ["Branding", "UX/UI Design", "Booking Flow", "Development"],
     images: [
       shot("https://giuliaponticomakeup.it/", 920, 580),
@@ -61,7 +82,13 @@ export const projects: ProjectEntry[] = [
     title: "Statte",
     href: "https://statte-site.vercel.app/",
     description:
-      "Portale informativo per il territorio di Statte — landing narrativa con contenuti editoriali.",
+      "Portale informativo per la community di Statte con navigazione essenziale.",
+    themeColor: "#9eb26e",
+    accentColor: "#ebf5d3",
+    topCode: "(PROJECT 03)",
+    leftMeta: "Primary focus",
+    rightMeta: "Secondary focus",
+    ctaLabel: "Visit project",
     services: ["Editorial", "Information Design", "UX/UI Design", "Development"],
     images: [
       shot("https://statte-site.vercel.app/", 940, 590),
