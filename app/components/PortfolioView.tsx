@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   motion,
   useMotionTemplate,
@@ -173,8 +173,39 @@ type SectionProps = {
   onCardHoverChange: (hovered: boolean, color?: string) => void;
 };
 
+function TitleFillOverlay({
+  title,
+  progress,
+}: {
+  title: string;
+  progress: ReturnType<typeof useScroll>["scrollYProgress"];
+}) {
+  const fillRevealInset = useTransform(progress, [0, 1], [100, 0]);
+  const fillClipPath = useMotionTemplate`inset(${fillRevealInset}% 0% 0% 0%)`;
+
+  return (
+    <motion.span
+      style={{ clipPath: fillClipPath, WebkitClipPath: fillClipPath }}
+      className="pointer-events-none absolute inset-0 block font-display text-[clamp(2rem,12vw,3.4rem)] leading-[0.92] tracking-tight text-white md:text-5xl lg:text-6xl"
+      aria-hidden
+    >
+      {title}
+    </motion.span>
+  );
+}
+
 function ProjectSlideCard({ project, index, onCardHoverChange }: SectionProps) {
   const ref = useRef<HTMLLIElement | null>(null);
+  const [isSmallScreen, setIsSmallScreen] = useState(false);
+
+  useEffect(() => {
+    const media = window.matchMedia("(max-width: 639px)");
+    const sync = () => setIsSmallScreen(media.matches);
+    sync();
+    media.addEventListener("change", sync);
+    return () => media.removeEventListener("change", sync);
+  }, []);
+
   const { scrollYProgress } = useScroll({
     target: ref,
     offset: ["start 92%", "center 50%"],
@@ -183,9 +214,6 @@ function ProjectSlideCard({ project, index, onCardHoverChange }: SectionProps) {
     target: ref,
     offset: ["start start", "end start"],
   });
-  // Title fill reaches 100% as the card reaches the viewport center.
-  const fillRevealInset = useTransform(scrollYProgress, [0, 1], [100, 0]);
-  const fillClipPath = useMotionTemplate`inset(${fillRevealInset}% 0% 0% 0%)`;
   // Flat stacking: outgoing card stays almost still while next card slides over it.
   const cardY = useTransform(cardExitProgress, [0, 1], [0, 0]);
   const cardScale = useTransform(cardExitProgress, [0, 1], [1, 1]);
@@ -226,7 +254,7 @@ function ProjectSlideCard({ project, index, onCardHoverChange }: SectionProps) {
         whileHover={{ y: 0 }}
         onMouseEnter={() => onCardHoverChange(true, ui.bg)}
         onMouseLeave={() => onCardHoverChange(false)}
-        className="relative block min-h-screen w-full overflow-hidden transform-gpu will-change-transform rounded-sm border border-white/20 px-4 py-8 no-underline shadow-[0_10px_24px_rgba(15,15,15,0.14)] sm:px-6 sm:py-10 md:px-8 md:py-11 lg:px-9 lg:py-12 lg:shadow-[0_12px_28px_rgba(15,15,15,0.13)] xl:shadow-[0_14px_30px_rgba(15,15,15,0.13)]"
+        className="relative block min-h-screen w-full overflow-hidden transform-gpu rounded-sm border border-white/20 px-4 py-8 no-underline shadow-none sm:px-6 sm:py-10 md:px-8 md:py-11 md:shadow-[0_10px_24px_rgba(15,15,15,0.14)] lg:px-9 lg:py-12 lg:shadow-[0_12px_28px_rgba(15,15,15,0.13)] xl:shadow-[0_14px_30px_rgba(15,15,15,0.13)]"
       >
         <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_20%_16%,rgba(255,255,255,0.14),transparent_42%),radial-gradient(circle_at_82%_80%,rgba(255,255,255,0.09),transparent_40%)]" />
         <motion.div
@@ -258,14 +286,17 @@ function ProjectSlideCard({ project, index, onCardHoverChange }: SectionProps) {
           <span className="block font-display text-[clamp(2rem,12vw,3.4rem)] leading-[0.92] tracking-tight text-white/55 [-webkit-text-stroke:1.3px_white] md:text-5xl lg:text-6xl">
             {project.title}
           </span>
-          {/* Riempimento che compare in fade, senza tagliare le lettere */}
-          <motion.span
-            style={{ clipPath: fillClipPath, WebkitClipPath: fillClipPath }}
-            className="pointer-events-none absolute inset-0 block font-display text-[clamp(2rem,12vw,3.4rem)] leading-[0.92] tracking-tight text-white md:text-5xl lg:text-6xl"
-            aria-hidden
-          >
-            {project.title}
-          </motion.span>
+          {/* Mobile: no clip-path transform, always fully visible */}
+          {isSmallScreen ? (
+            <span
+              className="pointer-events-none absolute inset-0 block font-display text-[clamp(2rem,12vw,3.4rem)] leading-[0.92] tracking-tight text-white md:text-5xl lg:text-6xl"
+              aria-hidden
+            >
+              {project.title}
+            </span>
+          ) : (
+            <TitleFillOverlay title={project.title} progress={scrollYProgress} />
+          )}
         </div>
 
         <p
@@ -414,7 +445,7 @@ function PortfolioInner({
         <CustomCursor active={isProjectHovered} color={cursorColor} />
         <div
           aria-hidden
-          className="pointer-events-none fixed inset-0 z-[60] opacity-[0.014]"
+          className="pointer-events-none fixed inset-0 z-[60] hidden opacity-[0.014] sm:block"
           style={{
             backgroundImage:
               "repeating-linear-gradient(0deg, rgba(0,0,0,0.18) 0 1px, transparent 1px 8px), repeating-linear-gradient(90deg, rgba(0,0,0,0.16) 0 1px, transparent 1px 9px)",

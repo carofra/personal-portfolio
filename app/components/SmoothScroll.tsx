@@ -5,6 +5,14 @@ import Lenis from "@studio-freight/lenis";
 
 export function SmoothScroll({ children }: { children: React.ReactNode }) {
   useEffect(() => {
+    const isTouchDevice =
+      "ontouchstart" in window || navigator.maxTouchPoints > 0;
+    const isMobileViewport = window.innerWidth < 768;
+
+    if (isTouchDevice || isMobileViewport) {
+      return;
+    }
+
     const lenis = new Lenis({
       duration: 1.2,
       easing: (t: number) => 1 - Math.pow(1 - t, 4),
