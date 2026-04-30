@@ -232,7 +232,7 @@ function ProjectSlideCard({ project, index, onCardHoverChange }: SectionProps) {
     <li
       id={`project-step-${index}`}
       ref={ref}
-      className="group sticky top-0 w-full scroll-mt-0"
+      className="group w-full scroll-mt-0 md:sticky md:top-0"
       style={{ zIndex: index + 1 }}
     >
       <motion.a
@@ -469,7 +469,7 @@ function PortfolioInner({
         <motion.p
           animate={{ opacity: [0.35, 1, 0.35] }}
           transition={{ duration: 2.2, repeat: Infinity, ease: "easeInOut" }}
-          className="absolute bottom-10 left-4 font-mono text-[10px] tracking-[0.18em] text-zinc-600 uppercase"
+          className="absolute bottom-16 left-4 font-mono text-[10px] tracking-[0.18em] text-zinc-600 uppercase"
         >
           Scroll to explore ↓
         </motion.p>
