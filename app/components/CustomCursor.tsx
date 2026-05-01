@@ -5,10 +5,13 @@ import { motion, useMotionValue, useSpring } from "framer-motion";
 
 export function CustomCursor({
   active,
-  color = "#E33B2B",
+  color = "#18181b",
+  hoverLabel = "VIEW",
 }: {
   active: boolean;
   color?: string;
+  /** Shown when hovering a project card (e.g. VIEW / VEDI). */
+  hoverLabel?: string;
 }) {
   const mouseX = useMotionValue(-100);
   const mouseY = useMotionValue(-100);
@@ -48,7 +51,7 @@ export function CustomCursor({
         }}
         transition={{ type: "spring", stiffness: 420, damping: 30 }}
       >
-        <span className={active ? "opacity-100" : "opacity-0"}>VEDI</span>
+        <span className={active ? "opacity-100" : "opacity-0"}>{hoverLabel}</span>
       </motion.div>
     </motion.div>
   );

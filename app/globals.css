@@ -1,10 +1,18 @@
 @import url("https://api.fontshare.com/v2/css?f[]=comico@400&display=swap");
 @import "tailwindcss";
 
+/* Class-based dark mode (Tailwind v4) — toggled via next-themes on <html> */
+@custom-variant dark (&:where(.dark, .dark *));
+
 :root {
   --page-bg: #f9f9f9;
   --ink: #111111;
   --desina: #e33b2b;
+}
+
+.dark {
+  --page-bg: #09090b;
+  --ink: #fafafa;
 }
 
 @theme inline {
@@ -19,6 +27,5 @@
 }
 
 body {
-  background-color: var(--page-bg);
-  color: var(--ink);
+  min-height: 100dvh;
 }

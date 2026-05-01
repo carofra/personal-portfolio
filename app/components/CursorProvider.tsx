@@ -49,8 +49,7 @@ function CustomCursor({ mode, enabled }: { mode: CursorMode; enabled: boolean })
       style={{ x: springX, y: springY }}
     >
       <motion.div
-        className="flex select-none items-center justify-center overflow-hidden rounded-full border border-white/25 text-[10px] font-sans font-bold tracking-widest text-white"
-        style={{ backgroundColor: "#E33B2B" }}
+        className="flex select-none items-center justify-center overflow-hidden rounded-full border border-white/25 bg-desina text-[10px] font-sans font-bold tracking-widest text-white"
         initial={false}
         animate={{ width: project ? 100 : 28, height: project ? 100 : 28 }}
         transition={{ type: "spring", stiffness: 500, damping: 34, mass: 0.3 }}

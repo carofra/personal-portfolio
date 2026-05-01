@@ -1,6 +1,9 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
+import { FloatingNav } from "./components/FloatingNav";
+import { LanguageProvider } from "./contexts/LanguageContext";
 import { LenisRoot } from "./components/LenisRoot";
+import { ThemeProvider } from "./components/ThemeProvider";
 import { siteConfig } from "./site.config";
 import "./globals.css";
 
@@ -20,7 +23,7 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: siteConfig.name,
-  description: "Portfolio – Carolina",
+  description: siteConfig.bio.en,
 };
 
 export default function RootLayout({
@@ -30,11 +33,17 @@ export default function RootLayout({
 }>) {
   return (
     <html
-      lang="it"
+      lang="en"
+      suppressHydrationWarning
       className={`${geistSans.variable} ${geistMono.variable} antialiased`}
     >
-      <body className="bg-[#F9F9F9] font-sans text-base font-extralight text-[#111]">
-        <LenisRoot>{children}</LenisRoot>
+      <body className="min-h-dvh bg-zinc-50 font-sans text-base font-extralight text-zinc-900 dark:bg-zinc-950 dark:text-zinc-50">
+        <ThemeProvider>
+          <LanguageProvider>
+            <FloatingNav />
+            <LenisRoot>{children}</LenisRoot>
+          </LanguageProvider>
+        </ThemeProvider>
       </body>
     </html>
   );

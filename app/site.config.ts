@@ -1,35 +1,60 @@
+export type Locale = "en" | "it";
+
+/** Bilingual string — English is the canonical default for the site. */
+export type L10n = {
+  en: string;
+  it: string;
+};
+
+export function pickL10n(strings: L10n, locale: Locale): string {
+  return strings[locale];
+}
+
 export const siteConfig = {
   name: "Carolina",
-  /** Bio sotto l’header principale */
-  bio: "Sviluppo esperienze web che uniscono estetica e funzionalità.",
+  bio: {
+    en: "I build web experiences that blend aesthetics and functionality.",
+    it: "Sviluppo esperienze web che uniscono estetica e funzionalità.",
+  } satisfies L10n,
+  copy: {
+    scrollToExplore: {
+      en: "Scroll to explore ↓",
+      it: "Scorri per esplorare ↓",
+    } satisfies L10n,
+    openProjectInNewTab: {
+      en: "Open in a new tab",
+      it: "Apri in una nuova scheda",
+    } satisfies L10n,
+  },
   contact: {
     email: {
       label: "carolinafranceschiello@gmail.com",
       href: "mailto:carolinafranceschiello@gmail.com",
     },
     social: [
-      { label: "LinkedIn", href: "https://www.linkedin.com/in/yourprofile" },
-      { label: "GitHub", href: "https://github.com/youruser" },
+      {
+        label: "LinkedIn",
+        href: "https://www.linkedin.com/in/carolina-franceschiello-b51687253/",
+      },
+      { label: "GitHub", href: "https://github.com/carofra" },
+      { label: "Instagram", href: "https://www.instagram.com/cazola_/" },
     ] as const,
   },
 } as const;
 
+export type SiteConfig = typeof siteConfig;
+
 export type ProjectEntry = {
   title: string;
   href: string;
-  description: string;
-  /** Theme color for step card background */
+  description: L10n;
   themeColor?: string;
-  /** Optional accent color for future decorative details */
   accentColor?: string;
-  /** Optional card labels/copy overrides */
-  topCode?: string;
-  leftMeta?: string;
-  rightMeta?: string;
-  ctaLabel?: string;
-  /** Lista servizi/discipline mostrata in stile tux.co/work */
+  topCode: L10n;
+  leftMeta: L10n;
+  rightMeta: L10n;
+  ctaLabel: L10n;
   services: readonly string[];
-  /** 2–3 screenshot asimmetrici (mshots) per composizione scroll */
   images: readonly [string, string, string];
 };
 
@@ -40,14 +65,16 @@ export const projects: ProjectEntry[] = [
   {
     title: "The Butter Project",
     href: "https://www.thebutterproject.club/",
-    description:
-      "Piattaforma digitale per un collettivo creativo con design system modulare.",
+    description: {
+      en: "Digital platform for a creative collective with a modular design system.",
+      it: "Piattaforma digitale per un collettivo creativo con design system modulare.",
+    },
     themeColor: "#ff5a00",
     accentColor: "#ffd8bf",
-    topCode: "(PROJECT 01)",
-    leftMeta: "Primary focus",
-    rightMeta: "Secondary focus",
-    ctaLabel: "Visit project",
+    topCode: { en: "(PROJECT 01)", it: "(PROGETTO 01)" },
+    leftMeta: { en: "Primary focus", it: "Focus principale" },
+    rightMeta: { en: "Secondary focus", it: "Focus secondario" },
+    ctaLabel: { en: "Visit project", it: "Visita il progetto" },
     services: [
       "Art Direction",
       "Web Design",
@@ -63,14 +90,16 @@ export const projects: ProjectEntry[] = [
   {
     title: "Giulia Pontico Makeup",
     href: "https://giuliaponticomakeup.it/",
-    description:
-      "Vetrina digitale e sistema di booking per una make-up artist.",
+    description: {
+      en: "Digital showcase and booking flow for a professional makeup artist.",
+      it: "Vetrina digitale e sistema di booking per una make-up artist.",
+    },
     themeColor: "#76b9db",
     accentColor: "#d7f0ff",
-    topCode: "(PROJECT 02)",
-    leftMeta: "Primary focus",
-    rightMeta: "Secondary focus",
-    ctaLabel: "Visit project",
+    topCode: { en: "(PROJECT 02)", it: "(PROGETTO 02)" },
+    leftMeta: { en: "Primary focus", it: "Focus principale" },
+    rightMeta: { en: "Secondary focus", it: "Focus secondario" },
+    ctaLabel: { en: "Visit project", it: "Visita il progetto" },
     services: ["Branding", "UX/UI Design", "Booking Flow", "Development"],
     images: [
       shot("https://giuliaponticomakeup.it/", 920, 580),
@@ -81,14 +110,16 @@ export const projects: ProjectEntry[] = [
   {
     title: "Statte",
     href: "https://statte-site.vercel.app/",
-    description:
-      "Portale informativo per la community di Statte con navigazione essenziale.",
+    description: {
+      en: "Information portal for the Statte community with clear, essential navigation.",
+      it: "Portale informativo per la community di Statte con navigazione essenziale.",
+    },
     themeColor: "#9eb26e",
     accentColor: "#ebf5d3",
-    topCode: "(PROJECT 03)",
-    leftMeta: "Primary focus",
-    rightMeta: "Secondary focus",
-    ctaLabel: "Visit project",
+    topCode: { en: "(PROJECT 03)", it: "(PROGETTO 03)" },
+    leftMeta: { en: "Primary focus", it: "Focus principale" },
+    rightMeta: { en: "Secondary focus", it: "Focus secondario" },
+    ctaLabel: { en: "Visit project", it: "Visita il progetto" },
     services: ["Editorial", "Information Design", "UX/UI Design", "Development"],
     images: [
       shot("https://statte-site.vercel.app/", 940, 590),

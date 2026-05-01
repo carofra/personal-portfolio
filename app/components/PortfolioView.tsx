@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { useTheme } from "next-themes";
 import {
   motion,
   useMotionTemplate,
@@ -10,24 +11,19 @@ import {
 } from "framer-motion";
 import { CustomCursor } from "./CustomCursor";
 import { SmoothScroll } from "./SmoothScroll";
-import type { ProjectEntry } from "../site.config";
+import { useLanguage } from "../contexts/LanguageContext";
+import {
+  pickL10n,
+  type Locale,
+  type ProjectEntry,
+  type SiteConfig,
+} from "../site.config";
 
 // ---------------------------------------------------------------------------
 // Design tokens
 // ---------------------------------------------------------------------------
 
-const INK_DARK = "#111111";
-
 const EASE_OUT_TUPLE = [0.22, 1, 0.36, 1] as const;
-
-type Site = {
-  name: string;
-  bio: string;
-  contact: {
-    email: { label: string; href: string };
-    social: ReadonlyArray<{ label: string; href: string }>;
-  };
-};
 
 // ---------------------------------------------------------------------------
 // Typography helpers — letter-by-letter reveal
@@ -170,6 +166,8 @@ function AnimatedTitle({
 type SectionProps = {
   project: ProjectEntry;
   index: number;
+  locale: Locale;
+  openInNewTabLabel: string;
   onCardHoverChange: (hovered: boolean, color?: string) => void;
 };
 
@@ -194,7 +192,13 @@ function TitleFillOverlay({
   );
 }
 
-function ProjectSlideCard({ project, index, onCardHoverChange }: SectionProps) {
+function ProjectSlideCard({
+  project,
+  index,
+  locale,
+  openInNewTabLabel,
+  onCardHoverChange,
+}: SectionProps) {
   const ref = useRef<HTMLLIElement | null>(null);
   const [isSmallScreen, setIsSmallScreen] = useState(false);
 
@@ -222,11 +226,12 @@ function ProjectSlideCard({ project, index, onCardHoverChange }: SectionProps) {
   const number = String(index + 1).padStart(2, "0");
   const ui = {
     bg: project.themeColor ?? "#ff5a00",
-    topCode: project.topCode ?? `(PROJECT ${number})`,
-    leftMeta: project.leftMeta ?? "Primary focus",
-    rightMeta: project.rightMeta ?? "Secondary focus",
-    cta: project.ctaLabel ?? "Visit project",
+    topCode: pickL10n(project.topCode, locale),
+    leftMeta: pickL10n(project.leftMeta, locale),
+    rightMeta: pickL10n(project.rightMeta, locale),
+    cta: pickL10n(project.ctaLabel, locale),
   };
+  const description = pickL10n(project.description, locale);
 
   return (
     <li
@@ -239,7 +244,7 @@ function ProjectSlideCard({ project, index, onCardHoverChange }: SectionProps) {
         href={project.href}
         target="_blank"
         rel="noopener noreferrer"
-        aria-label={`${project.title} — apri in una nuova scheda`}
+        aria-label={`${project.title} — ${openInNewTabLabel}`}
         style={{
           y: cardY,
           scale: cardScale,
@@ -304,10 +309,10 @@ function ProjectSlideCard({ project, index, onCardHoverChange }: SectionProps) {
             index === 0 ? "mt-1" : "mt-2"
           }`}
         >
-          {project.description}
+          {description}
         </p>
 
-        <div className="mt-6 inline-flex items-center rounded-full bg-white px-4 py-2 font-mono text-[10px] tracking-[0.18em] text-[#111] uppercase transition-transform duration-300 group-hover:scale-105 sm:mt-7 lg:mt-8">
+        <div className="mt-6 inline-flex items-center rounded-full bg-white px-4 py-2 font-mono text-[10px] tracking-[0.18em] text-zinc-900 uppercase transition-transform duration-300 group-hover:scale-105 sm:mt-7 lg:mt-8 dark:bg-zinc-100 dark:text-zinc-950">
           {ui.cta}
         </div>
 
@@ -349,13 +354,17 @@ function ProjectSlideCard({ project, index, onCardHoverChange }: SectionProps) {
 
 function ProjectsStepsSection({
   projects,
+  locale,
+  openInNewTabLabel,
   onCardHoverChange,
 }: {
   projects: ProjectEntry[];
+  locale: Locale;
+  openInNewTabLabel: string;
   onCardHoverChange: (hovered: boolean, color?: string) => void;
 }) {
   return (
-    <section className="w-full border-t border-zinc-200/80 px-4 pt-4 pb-14 sm:px-8 sm:pt-6 sm:pb-18 lg:px-16 lg:pt-8 lg:pb-28">
+    <section className="w-full border-t border-zinc-200/80 px-4 pt-4 pb-14 dark:border-zinc-800/80 sm:px-8 sm:pt-6 sm:pb-18 lg:px-16 lg:pt-8 lg:pb-28">
       <div className="mx-auto w-full max-w-[92rem]">
         <ul role="list" className="space-y-8 sm:space-y-10 lg:space-y-0">
           {projects.map((project, index) => (
@@ -363,6 +372,8 @@ function ProjectsStepsSection({
               key={project.title}
               project={project}
               index={index}
+              locale={locale}
+              openInNewTabLabel={openInNewTabLabel}
               onCardHoverChange={onCardHoverChange}
             />
           ))}
@@ -377,18 +388,18 @@ function ProjectsStepsSection({
 // fill) so tonal shifts read continuously to the bottom.
 // ---------------------------------------------------------------------------
 
-function Footer({ config }: { config: Site }) {
+function Footer({ config }: { config: SiteConfig }) {
   const links = [config.contact.email, ...config.contact.social];
 
   return (
     <footer
       id="contatti"
-      className="relative w-full bg-transparent px-10 py-20 text-[#111] sm:px-16 sm:py-24 lg:px-24"
+      className="relative w-full bg-transparent px-10 py-20 text-zinc-900 sm:px-16 sm:py-24 lg:px-24 dark:text-zinc-50"
       aria-label="Contatti"
     >
       <ul
         role="list"
-        className="flex flex-row flex-wrap items-center justify-center gap-x-10 gap-y-3 font-mono text-xs font-medium tracking-widest text-[#111] uppercase sm:gap-x-14"
+        className="flex flex-row flex-wrap items-center justify-center gap-x-10 gap-y-3 font-mono text-xs font-medium tracking-widest text-zinc-900 uppercase sm:gap-x-14 dark:text-zinc-50"
       >
         {links.map((l) => {
           const isMail = l.href.startsWith("mailto:");
@@ -398,7 +409,7 @@ function Footer({ config }: { config: Site }) {
                 href={l.href}
                 target={isMail ? undefined : "_blank"}
                 rel={isMail ? undefined : "noopener noreferrer"}
-                className="transition-colors duration-500 ease-out hover:text-[#E33B2B]"
+                className="transition-colors duration-500 ease-out hover:text-desina"
               >
                 {l.label}
               </a>
@@ -418,11 +429,13 @@ function PortfolioInner({
   config,
   projectList,
 }: {
-  config: Site;
+  config: SiteConfig;
   projectList: ProjectEntry[];
 }) {
+  const { locale } = useLanguage();
   const [isProjectHovered, setIsProjectHovered] = useState(false);
-  const [cursorColor, setCursorColor] = useState("#111111");
+  const { resolvedTheme } = useTheme();
+  const [cursorColor, setCursorColor] = useState("#18181b");
   const { scrollY } = useScroll();
   const heroX = useTransform(scrollY, [0, 460], [0, -560]);
   const heroY = useTransform(scrollY, [0, 460], [0, -320]);
@@ -430,33 +443,41 @@ function PortfolioInner({
   const heroOpacity = useTransform(scrollY, [0, 180, 260], [1, 0.25, 0]);
   const hintOpacity = useTransform(scrollY, [0, 320, 420], [1, 1, 0]);
 
+  const defaultCursorColor = resolvedTheme === "dark" ? "#fafafa" : "#18181b";
+
+  useEffect(() => {
+    if (!isProjectHovered) {
+      setCursorColor(defaultCursorColor);
+    }
+  }, [defaultCursorColor, isProjectHovered]);
+
   const handleCardHoverChange = (hovered: boolean, color?: string) => {
     setIsProjectHovered(hovered);
     if (hovered && color) {
       setCursorColor(color);
       return;
     }
-    setCursorColor("#111111");
+    setCursorColor(defaultCursorColor);
   };
+
+  const bio = pickL10n(config.bio, locale);
+  const scrollHint = pickL10n(config.copy.scrollToExplore, locale);
+  const openInNewTabLabel = pickL10n(config.copy.openProjectInNewTab, locale);
+  const cursorHoverLabel = locale === "it" ? "VEDI" : "VIEW";
 
   return (
     <SmoothScroll>
-      <main className="relative isolate w-full overflow-x-clip bg-[#FAFAFA] text-[#111]">
-        <CustomCursor active={isProjectHovered} color={cursorColor} />
-        <div
-          aria-hidden
-          className="pointer-events-none fixed inset-0 z-[60] hidden opacity-[0.014] sm:block"
-          style={{
-            backgroundImage:
-              "repeating-linear-gradient(0deg, rgba(0,0,0,0.18) 0 1px, transparent 1px 8px), repeating-linear-gradient(90deg, rgba(0,0,0,0.16) 0 1px, transparent 1px 9px)",
-            backgroundSize: "16px 16px, 18px 18px",
-          }}
+      <main className="relative isolate w-full overflow-x-clip bg-zinc-50 text-zinc-900 dark:bg-zinc-950 dark:text-zinc-50">
+        <CustomCursor
+          active={isProjectHovered}
+          color={cursorColor}
+          hoverLabel={cursorHoverLabel}
         />
         <div className="relative z-10">
       {/* Mobile hero: static, readable, no clipping */}
       <section className="relative flex min-h-screen w-full items-center justify-center px-4 sm:hidden">
         <div className="text-center">
-          <h1 className="font-display text-[clamp(2.1rem,15vw,3.2rem)] leading-[0.88] tracking-tight text-[#111] uppercase">
+          <h1 className="font-display text-[clamp(2.1rem,15vw,3.2rem)] leading-[0.88] tracking-tight text-zinc-900 uppercase dark:text-zinc-50">
             CA
             <br />
             RO
@@ -469,15 +490,15 @@ function PortfolioInner({
         <motion.p
           animate={{ opacity: [0.35, 1, 0.35] }}
           transition={{ duration: 2.2, repeat: Infinity, ease: "easeInOut" }}
-          className="absolute left-4 z-20 font-mono text-[10px] tracking-[0.18em] text-zinc-600 uppercase bottom-[calc(env(safe-area-inset-bottom)+6rem)]"
+          className="absolute left-4 z-20 font-mono text-[10px] tracking-[0.18em] text-zinc-600 uppercase dark:text-zinc-400 bottom-[calc(env(safe-area-inset-bottom)+6rem)]"
         >
-          Scroll to explore ↓
+          {scrollHint}
         </motion.p>
       </section>
 
       {/* Desktop/tablet hero: fixed transform on first scroll segment */}
       <section className="relative hidden h-[110vh] w-full px-4 sm:block sm:h-[115vh] sm:px-8 lg:h-[120vh] lg:px-20">
-        <span className="sr-only">{config.bio}</span>
+        <span className="sr-only">{bio}</span>
       </section>
 
       <motion.div
@@ -503,14 +524,16 @@ function PortfolioInner({
             repeat: Infinity,
             ease: "easeInOut",
           }}
-          className="font-mono text-[10px] tracking-[0.18em] text-zinc-600 uppercase"
+          className="font-mono text-[10px] tracking-[0.18em] text-zinc-600 uppercase dark:text-zinc-400"
         >
-          Scroll to explore ↓
+          {scrollHint}
         </motion.p>
       </motion.div>
 
         <ProjectsStepsSection
           projects={projectList}
+          locale={locale}
+          openInNewTabLabel={openInNewTabLabel}
           onCardHoverChange={handleCardHoverChange}
         />
 
@@ -525,7 +548,7 @@ export function PortfolioView({
   config,
   projects: projectList,
 }: {
-  config: Site;
+  config: SiteConfig;
   projects: ProjectEntry[];
 }) {
   return <PortfolioInner config={config} projectList={projectList} />;
