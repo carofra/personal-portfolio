@@ -109,7 +109,7 @@ export const projects: ProjectEntry[] = [
   },
   {
     title: "Statte",
-    href: "https://statte-site.vercel.app/",
+    href: "https://stattearteinatto.it/",
     description: {
       en: "Information portal for the Statte community with clear, essential navigation.",
       it: "Portale informativo per la community di Statte con navigazione essenziale.",
@@ -122,9 +122,9 @@ export const projects: ProjectEntry[] = [
     ctaLabel: { en: "Visit project", it: "Visita il progetto" },
     services: ["Editorial", "Information Design", "UX/UI Design", "Development"],
     images: [
-      shot("https://statte-site.vercel.app/", 940, 590),
-      shot("https://statte-site.vercel.app/", 500, 660),
-      shot("https://statte-site.vercel.app/", 380, 300),
+      shot("https://stattearteinatto.it/", 940, 590),
+      shot("https://stattearteinatto.it/", 500, 660),
+      shot("https://stattearteinatto.it/", 380, 300),
     ],
   },
 ];
