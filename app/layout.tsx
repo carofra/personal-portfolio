@@ -1,10 +1,12 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
+import localFont from "next/font/local";
 import { FloatingNav } from "./components/FloatingNav";
 import { LanguageProvider } from "./contexts/LanguageContext";
 import { LenisRoot } from "./components/LenisRoot";
 import { ThemeProvider } from "./components/ThemeProvider";
 import { siteConfig } from "./site.config";
+import { Analytics } from "@vercel/analytics/next";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -21,6 +23,16 @@ const geistMono = Geist_Mono({
   display: "swap",
 });
 
+const comico = localFont({
+  src: "./fonts/Comico-Regular.woff2",
+  variable: "--font-comico",
+  weight: "400",
+  style: "normal",
+  display: "swap",
+  preload: true,
+  fallback: ["cursive"],
+});
+
 export const metadata: Metadata = {
   title: siteConfig.name,
   description: siteConfig.bio.en,
@@ -35,7 +47,7 @@ export default function RootLayout({
     <html
       lang="en"
       suppressHydrationWarning
-      className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+      className={`${geistSans.variable} ${geistMono.variable} ${comico.variable} antialiased`}
     >
       <body className="min-h-dvh bg-zinc-50 font-sans text-base font-extralight text-zinc-900 dark:bg-zinc-950 dark:text-zinc-50">
         <ThemeProvider>
@@ -44,6 +56,7 @@ export default function RootLayout({
             <LenisRoot>{children}</LenisRoot>
           </LanguageProvider>
         </ThemeProvider>
+        <Analytics />
       </body>
     </html>
   );

@@ -1,4 +1,3 @@
-@import url("https://api.fontshare.com/v2/css?f[]=comico@400&display=swap");
 @import "tailwindcss";
 
 /* Class-based dark mode (Tailwind v4) — toggled via next-themes on <html> */
@@ -20,7 +19,8 @@
   --font-mono:
     var(--font-geist-mono), ui-monospace, "SFMono-Regular", Menlo, Monaco,
     Consolas, monospace;
-  --font-display: "Comico", cursive, ui-sans-serif, system-ui, sans-serif;
+  --font-display: var(--font-comico), cursive, ui-sans-serif, system-ui,
+    sans-serif;
   --color-desina: #e33b2b;
   --color-paper: #f9f9f9;
   --color-ink: #111111;
