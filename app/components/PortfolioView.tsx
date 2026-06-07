@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { useTheme } from "next-themes";
 import {
   motion,
+  useReducedMotion,
   useMotionTemplate,
   useScroll,
   useTransform,
@@ -70,6 +71,7 @@ const SLIDE_DOWN_TITLE_DELAY = 0.05;
 
 function AnimatedTitle({
   text,
+  id,
   className = "",
   as = "h2",
   effect = "letter-rise",
@@ -77,6 +79,7 @@ function AnimatedTitle({
   afterRevealDelay = 0,
 }: {
   text: string;
+  id?: string;
   className?: string;
   as?: "h1" | "h2";
   // `letter-rise`       — current Comico letter-by-letter slide-up, used by
@@ -88,11 +91,26 @@ function AnimatedTitle({
   afterRevealDelay?: number;
 }) {
   const isSlideDown = effect === "short-slide-down";
+  const shouldReduceMotion = useReducedMotion();
+
+  if (shouldReduceMotion) {
+    const Tag = as;
+    return (
+      <Tag
+        id={id}
+        aria-label={text}
+        className={`font-display leading-[0.95] font-extrabold tracking-tight uppercase ${className}`}
+      >
+        {text}
+      </Tag>
+    );
+  }
 
   if (isSlideDown) {
     const Tag = as === "h1" ? "h1" : "h2";
     return (
       <Tag
+        id={id}
         aria-label={text}
         className={`font-display leading-[0.95] font-extrabold tracking-tight uppercase ${className}`}
       >
@@ -127,6 +145,7 @@ function AnimatedTitle({
   const Tag = as === "h1" ? motion.h1 : motion.h2;
   return (
     <Tag
+      id={id}
       aria-label={text}
       className={`font-display leading-[0.95] font-extrabold tracking-tight uppercase ${className}`}
       variants={titleWrapVariants}
@@ -141,7 +160,7 @@ function AnimatedTitle({
         // cell and were being sliced off by a plain `overflow-hidden`.
         <span
           key={`w-${w}`}
-          className="mr-[0.28em] inline-block align-baseline [clip-path:inset(0_-100vw)]"
+          className="mr-[0.28em] inline-block align-baseline whitespace-nowrap [clip-path:inset(0_-100vw)]"
         >
           {word.split("").map((ch, i) => (
             <motion.span
@@ -201,6 +220,7 @@ function ProjectSlideCard({
 }: SectionProps) {
   const ref = useRef<HTMLLIElement | null>(null);
   const [isSmallScreen, setIsSmallScreen] = useState(false);
+  const shouldReduceMotion = useReducedMotion();
 
   useEffect(() => {
     const media = window.matchMedia("(max-width: 639px)");
@@ -252,10 +272,13 @@ function ProjectSlideCard({
           backgroundColor: ui.bg,
           transformPerspective: 1200,
         }}
-        initial={{ y: "100%" }}
-        whileInView={{ y: 0 }}
+        initial={shouldReduceMotion ? false : { y: "100%" }}
+        whileInView={shouldReduceMotion ? undefined : { y: 0 }}
         viewport={{ once: true }}
-        transition={{ duration: 0.8, ease: EASE_OUT_TUPLE }}
+        transition={{
+          duration: shouldReduceMotion ? 0 : 0.8,
+          ease: EASE_OUT_TUPLE,
+        }}
         whileHover={{ y: 0 }}
         onMouseEnter={() => onCardHoverChange(true, ui.bg)}
         onMouseLeave={() => onCardHoverChange(false)}
@@ -383,6 +406,64 @@ function ProjectsStepsSection({
   );
 }
 
+function AboutSection({
+  config,
+  locale,
+}: {
+  config: SiteConfig;
+  locale: Locale;
+}) {
+  const about = config.about;
+
+  return (
+    <section
+      id="about"
+      className="w-full border-t border-zinc-200/80 px-4 py-16 dark:border-zinc-800/80 sm:px-8 sm:py-20 lg:px-16 lg:py-28"
+      aria-labelledby="about-title"
+    >
+      <div className="mx-auto grid w-full max-w-[92rem] gap-12 lg:grid-cols-[0.75fr_1.25fr] lg:gap-20">
+        <div>
+          <p className="font-mono text-[10px] tracking-[0.28em] text-zinc-500 uppercase dark:text-zinc-400">
+            {pickL10n(about.eyebrow, locale)}
+          </p>
+        </div>
+
+        <div>
+          <AnimatedTitle
+            as="h2"
+            id="about-title"
+            text={pickL10n(about.title, locale)}
+            effect="short-slide-down"
+            className="max-w-4xl text-[clamp(2rem,7.5vw,5.5rem)] text-zinc-900 dark:text-zinc-50"
+          />
+          <p className="mt-8 max-w-3xl text-lg leading-snug text-zinc-700 sm:text-xl lg:text-2xl dark:text-zinc-300">
+            {pickL10n(about.body, locale)}
+          </p>
+
+          <ul
+            role="list"
+            className="mt-12 grid gap-px overflow-hidden border border-zinc-200 bg-zinc-200 dark:border-zinc-800 dark:bg-zinc-800 sm:grid-cols-3"
+          >
+            {about.services.map((service) => (
+              <li
+                key={pickL10n(service.label, locale)}
+                className="bg-zinc-50 p-5 dark:bg-zinc-950 sm:p-6"
+              >
+                <p className="font-mono text-[10px] tracking-[0.24em] text-desina uppercase">
+                  {pickL10n(service.label, locale)}
+                </p>
+                <p className="mt-8 text-base leading-snug text-zinc-700 dark:text-zinc-300">
+                  {pickL10n(service.description, locale)}
+                </p>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </div>
+    </section>
+  );
+}
+
 // ---------------------------------------------------------------------------
 // Footer — sits on the same animated paper wash as `motion.main` (transparent
 // fill) so tonal shifts read continuously to the bottom.
@@ -433,9 +514,9 @@ function PortfolioInner({
   projectList: ProjectEntry[];
 }) {
   const { locale } = useLanguage();
-  const [isProjectHovered, setIsProjectHovered] = useState(false);
+  const [projectHoverColor, setProjectHoverColor] = useState<string | null>(null);
   const { resolvedTheme } = useTheme();
-  const [cursorColor, setCursorColor] = useState("#18181b");
+  const shouldReduceMotion = useReducedMotion();
   const { scrollY } = useScroll();
   const heroX = useTransform(scrollY, [0, 460], [0, -560]);
   const heroY = useTransform(scrollY, [0, 460], [0, -320]);
@@ -444,20 +525,10 @@ function PortfolioInner({
   const hintOpacity = useTransform(scrollY, [0, 320, 420], [1, 1, 0]);
 
   const defaultCursorColor = resolvedTheme === "dark" ? "#fafafa" : "#18181b";
-
-  useEffect(() => {
-    if (!isProjectHovered) {
-      setCursorColor(defaultCursorColor);
-    }
-  }, [defaultCursorColor, isProjectHovered]);
+  const cursorColor = projectHoverColor ?? defaultCursorColor;
 
   const handleCardHoverChange = (hovered: boolean, color?: string) => {
-    setIsProjectHovered(hovered);
-    if (hovered && color) {
-      setCursorColor(color);
-      return;
-    }
-    setCursorColor(defaultCursorColor);
+    setProjectHoverColor(hovered && color ? color : null);
   };
 
   const bio = pickL10n(config.bio, locale);
@@ -469,7 +540,7 @@ function PortfolioInner({
     <SmoothScroll>
       <main className="relative isolate w-full overflow-x-clip bg-zinc-50 text-zinc-900 dark:bg-zinc-950 dark:text-zinc-50">
         <CustomCursor
-          active={isProjectHovered}
+          active={projectHoverColor !== null}
           color={cursorColor}
           hoverLabel={cursorHoverLabel}
         />
@@ -488,8 +559,12 @@ function PortfolioInner({
           </h1>
         </div>
         <motion.p
-          animate={{ opacity: [0.35, 1, 0.35] }}
-          transition={{ duration: 2.2, repeat: Infinity, ease: "easeInOut" }}
+          animate={shouldReduceMotion ? { opacity: 1 } : { opacity: [0.35, 1, 0.35] }}
+          transition={
+            shouldReduceMotion
+              ? { duration: 0 }
+              : { duration: 2.2, repeat: Infinity, ease: "easeInOut" }
+          }
           className="absolute left-4 z-20 font-mono text-[10px] tracking-[0.18em] text-zinc-600 uppercase dark:text-zinc-400 bottom-[calc(env(safe-area-inset-bottom)+6rem)]"
         >
           {scrollHint}
@@ -503,7 +578,11 @@ function PortfolioInner({
 
       <motion.div
         aria-hidden
-        style={{ x: heroX, y: heroY, scale: heroScale, opacity: heroOpacity }}
+        style={
+          shouldReduceMotion
+            ? { opacity: 1 }
+            : { x: heroX, y: heroY, scale: heroScale, opacity: heroOpacity }
+        }
         className="pointer-events-none fixed top-1/2 left-1/2 z-50 hidden -translate-x-1/2 -translate-y-1/2 px-4 sm:block sm:px-0"
       >
         <AnimatedTitle
@@ -514,21 +593,27 @@ function PortfolioInner({
       </motion.div>
 
       <motion.div
-        style={{ opacity: hintOpacity }}
+        style={shouldReduceMotion ? { opacity: 1 } : { opacity: hintOpacity }}
         className="fixed bottom-10 left-4 z-40 hidden sm:block sm:bottom-14 sm:left-8 lg:bottom-16 lg:left-20"
       >
         <motion.p
-          animate={{ opacity: [0.35, 1, 0.35] }}
-          transition={{
-            duration: 2.2,
-            repeat: Infinity,
-            ease: "easeInOut",
-          }}
+          animate={shouldReduceMotion ? { opacity: 1 } : { opacity: [0.35, 1, 0.35] }}
+          transition={
+            shouldReduceMotion
+              ? { duration: 0 }
+              : {
+                  duration: 2.2,
+                  repeat: Infinity,
+                  ease: "easeInOut",
+                }
+          }
           className="font-mono text-[10px] tracking-[0.18em] text-zinc-600 uppercase dark:text-zinc-400"
         >
           {scrollHint}
         </motion.p>
       </motion.div>
+
+        <AboutSection config={config} locale={locale} />
 
         <ProjectsStepsSection
           projects={projectList}

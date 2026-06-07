@@ -12,10 +12,52 @@ export function pickL10n(strings: L10n, locale: Locale): string {
 
 export const siteConfig = {
   name: "Carolina",
+  fullName: "Carolina Franceschiello",
+  role: "Web Designer & Developer",
+  siteUrl:
+    process.env.NEXT_PUBLIC_SITE_URL ??
+    "https://carofra.github.io/personal-portfolio",
   bio: {
     en: "I build web experiences that blend aesthetics and functionality.",
     it: "Sviluppo esperienze web che uniscono estetica e funzionalità.",
   } satisfies L10n,
+  about: {
+    eyebrow: {
+      en: "About",
+      it: "Chi sono",
+    } satisfies L10n,
+    title: {
+      en: "Digital experiences with a visual point of view.",
+      it: "Esperienze digitali con un punto di vista visivo.",
+    } satisfies L10n,
+    body: {
+      en: "I design and develop websites for creatives, small brands, and independent projects, pairing clean interfaces with expressive details and thoughtful interactions.",
+      it: "Disegno e sviluppo siti per creativi, piccoli brand e progetti indipendenti, unendo interfacce pulite, dettagli espressivi e interazioni curate.",
+    } satisfies L10n,
+    services: [
+      {
+        label: { en: "Design", it: "Design" } satisfies L10n,
+        description: {
+          en: "Visual direction, interface systems, and responsive layouts.",
+          it: "Direzione visiva, sistemi di interfaccia e layout responsive.",
+        } satisfies L10n,
+      },
+      {
+        label: { en: "Development", it: "Sviluppo" } satisfies L10n,
+        description: {
+          en: "Fast, accessible frontends built with modern web tools.",
+          it: "Frontend veloci e accessibili costruiti con strumenti moderni.",
+        } satisfies L10n,
+      },
+      {
+        label: { en: "Motion", it: "Motion" } satisfies L10n,
+        description: {
+          en: "Subtle transitions and scroll moments that support the content.",
+          it: "Transizioni e momenti di scroll che valorizzano il contenuto.",
+        } satisfies L10n,
+      },
+    ] as const,
+  },
   copy: {
     scrollToExplore: {
       en: "Scroll to explore ↓",
@@ -55,11 +97,7 @@ export type ProjectEntry = {
   rightMeta: L10n;
   ctaLabel: L10n;
   services: readonly string[];
-  images: readonly [string, string, string];
 };
-
-const shot = (url: string, w: number, h: number) =>
-  `https://s.wordpress.com/mshots/v1/${encodeURIComponent(url)}?w=${w}&h=${h}`;
 
 export const projects: ProjectEntry[] = [
   {
@@ -81,11 +119,6 @@ export const projects: ProjectEntry[] = [
       "Design System",
       "Development",
     ],
-    images: [
-      shot("https://www.thebutterproject.club/", 960, 600),
-      shot("https://www.thebutterproject.club/", 520, 680),
-      shot("https://www.thebutterproject.club/", 420, 320),
-    ],
   },
   {
     title: "Giulia Pontico Makeup",
@@ -101,11 +134,6 @@ export const projects: ProjectEntry[] = [
     rightMeta: { en: "Secondary focus", it: "Focus secondario" },
     ctaLabel: { en: "Visit project", it: "Visita il progetto" },
     services: ["Branding", "UX/UI Design", "Booking Flow", "Development"],
-    images: [
-      shot("https://giuliaponticomakeup.it/", 920, 580),
-      shot("https://giuliaponticomakeup.it/", 480, 640),
-      shot("https://giuliaponticomakeup.it/", 400, 300),
-    ],
   },
   {
     title: "Statte",
@@ -121,10 +149,5 @@ export const projects: ProjectEntry[] = [
     rightMeta: { en: "Secondary focus", it: "Focus secondario" },
     ctaLabel: { en: "Visit project", it: "Visita il progetto" },
     services: ["Editorial", "Information Design", "UX/UI Design", "Development"],
-    images: [
-      shot("https://stattearteinatto.it/", 940, 590),
-      shot("https://stattearteinatto.it/", 500, 660),
-      shot("https://stattearteinatto.it/", 380, 300),
-    ],
   },
 ];

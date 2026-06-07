@@ -11,14 +11,15 @@ export function FloatingNav() {
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
-    setMounted(true);
+    const frame = requestAnimationFrame(() => setMounted(true));
+    return () => cancelAnimationFrame(frame);
   }, []);
 
   const isDark = resolvedTheme === "dark";
 
   return (
     <nav
-      className="fixed bottom-6 right-6 z-[100] flex flex-row items-center gap-6 mix-blend-difference text-white sm:top-1/2 sm:right-6 sm:bottom-auto sm:-translate-y-1/2 sm:flex-col sm:items-center"
+      className="fixed right-4 bottom-4 z-[100] flex flex-row items-center gap-5 rounded-full border border-white/15 bg-zinc-950/80 px-4 py-3 text-white shadow-[0_12px_30px_rgba(0,0,0,0.18)] backdrop-blur-md sm:top-1/2 sm:right-6 sm:bottom-auto sm:-translate-y-1/2 sm:flex-col sm:items-center sm:px-3 sm:py-4 dark:border-white/10 dark:bg-white/10"
       aria-label={locale === "it" ? "Navigazione sito" : "Site navigation"}
     >
       <div
@@ -33,7 +34,7 @@ export function FloatingNav() {
               key={code}
               type="button"
               onClick={() => setLocale(code)}
-              className={`font-mono text-[10px] uppercase leading-none tracking-widest text-white transition-opacity hover:opacity-70 ${
+              className={`rounded-sm font-mono text-[10px] leading-none tracking-widest uppercase transition-opacity hover:opacity-70 focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-zinc-950 focus-visible:outline-none ${
                 active ? "opacity-100 hover:opacity-100" : "opacity-50"
               }`}
               aria-pressed={active}
@@ -51,7 +52,7 @@ export function FloatingNav() {
         <button
           type="button"
           onClick={() => setTheme(isDark ? "light" : "dark")}
-          className="inline-flex size-[18px] shrink-0 items-center justify-center leading-none text-white transition-opacity hover:opacity-70"
+          className="inline-flex size-[18px] shrink-0 items-center justify-center rounded-sm leading-none transition-opacity hover:opacity-70 focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-zinc-950 focus-visible:outline-none"
           aria-label={
             isDark
               ? locale === "it"

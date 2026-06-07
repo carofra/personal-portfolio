@@ -25,12 +25,24 @@ export function LanguageProvider({ children }: { children: ReactNode }) {
   const [locale, setLocaleState] = useState<Locale>("en");
 
   useEffect(() => {
+    let cancelled = false;
     try {
       const raw = localStorage.getItem(STORAGE_KEY);
-      if (raw === "en" || raw === "it") setLocaleState(raw);
+      if (raw === "en" || raw === "it") {
+        const frame = requestAnimationFrame(() => {
+          if (!cancelled) setLocaleState(raw);
+        });
+        return () => {
+          cancelled = true;
+          cancelAnimationFrame(frame);
+        };
+      }
     } catch {
       /* */
     }
+    return () => {
+      cancelled = true;
+    };
   }, []);
 
   useEffect(() => {

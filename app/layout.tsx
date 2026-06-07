@@ -33,9 +33,44 @@ const comico = localFont({
   fallback: ["cursive"],
 });
 
+const siteTitle = `${siteConfig.fullName} — ${siteConfig.role}`;
+const siteDescription = siteConfig.bio.en;
+const siteUrl = new URL(siteConfig.siteUrl);
+
 export const metadata: Metadata = {
-  title: siteConfig.name,
-  description: siteConfig.bio.en,
+  metadataBase: siteUrl,
+  title: {
+    default: siteTitle,
+    template: `%s | ${siteConfig.fullName}`,
+  },
+  description: siteDescription,
+  alternates: {
+    canonical: "/",
+  },
+  openGraph: {
+    title: siteTitle,
+    description: siteDescription,
+    url: "/",
+    siteName: siteConfig.fullName,
+    locale: "en_US",
+    alternateLocale: ["it_IT"],
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: siteTitle,
+    description: siteDescription,
+  },
+};
+
+const personJsonLd = {
+  "@context": "https://schema.org",
+  "@type": "Person",
+  name: siteConfig.fullName,
+  url: siteConfig.siteUrl,
+  jobTitle: siteConfig.role,
+  email: siteConfig.contact.email.href,
+  sameAs: siteConfig.contact.social.map((link) => link.href),
 };
 
 export default function RootLayout({
@@ -56,6 +91,11 @@ export default function RootLayout({
             <LenisRoot>{children}</LenisRoot>
           </LanguageProvider>
         </ThemeProvider>
+        <script
+          type="application/ld+json"
+          suppressHydrationWarning
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(personJsonLd) }}
+        />
         <Analytics />
       </body>
     </html>
