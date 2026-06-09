@@ -470,7 +470,9 @@ function AboutSection({
 // ---------------------------------------------------------------------------
 
 function Footer({ config }: { config: SiteConfig }) {
+  const { locale } = useLanguage();
   const links = [config.contact.email, ...config.contact.social];
+  const availability = pickL10n(config.copy.availability, locale);
 
   return (
     <footer
@@ -478,6 +480,14 @@ function Footer({ config }: { config: SiteConfig }) {
       className="relative w-full bg-transparent px-10 py-20 text-zinc-900 sm:px-16 sm:py-24 lg:px-24 dark:text-zinc-50"
       aria-label="Contatti"
     >
+      <p className="mb-10 text-center sm:mb-12">
+        <a
+          href={config.contact.email.href}
+          className="font-mono text-[10px] tracking-[0.22em] text-zinc-500 uppercase transition-colors duration-500 ease-out hover:text-desina dark:text-zinc-400"
+        >
+          {availability}
+        </a>
+      </p>
       <ul
         role="list"
         className="flex flex-row flex-wrap items-center justify-center gap-x-10 gap-y-3 font-mono text-xs font-medium tracking-widest text-zinc-900 uppercase sm:gap-x-14 dark:text-zinc-50"

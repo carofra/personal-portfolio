@@ -67,6 +67,10 @@ export const siteConfig = {
       en: "Open in a new tab",
       it: "Apri in una nuova scheda",
     } satisfies L10n,
+    availability: {
+      en: "Let's make something together",
+      it: "Creiamo qualcosa insieme",
+    } satisfies L10n,
   },
   contact: {
     email: {
