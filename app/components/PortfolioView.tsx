@@ -264,7 +264,7 @@ function ProjectSlideCard({
         href={project.href}
         target="_blank"
         rel="noopener noreferrer"
-        aria-label={`${project.title} — ${openInNewTabLabel}`}
+        aria-label={`${project.title} - ${openInNewTabLabel}`}
         style={{
           y: cardY,
           scale: cardScale,

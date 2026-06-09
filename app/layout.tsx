@@ -33,7 +33,7 @@ const comico = localFont({
   fallback: ["cursive"],
 });
 
-const siteTitle = `${siteConfig.fullName} — ${siteConfig.role}`;
+const siteTitle = `${siteConfig.fullName} - ${siteConfig.role}`;
 const siteDescription = siteConfig.bio.en;
 const siteUrl = new URL(siteConfig.siteUrl);
 
